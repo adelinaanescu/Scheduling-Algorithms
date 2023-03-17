@@ -1,13 +1,21 @@
 class Job:
-    def __init__(self, job_id, start_time, run_time,tasks):
-        self.job_id = job_id
-        self.start_time = start_time
-        self.run_time = run_time
-        self.turn_around_time = start_time + run_time
-        self.tasks = tasks
+    def __init__(self, id, timestamp, event_type):
+        self.id = id
+        self.timestamp = timestamp
+        self.event_type = event_type
+
 
     def __str__(self):
-        return "Job {} with tasks {}".format(self.job_id, [str(task) for task in self.tasks])
+        return "Job with id {}".format(self.id)
 
 
 
+# The job events table contains the following fields:
+# 1. timestamp
+# 2. missing info
+# 3. job ID
+# 4. event type
+# 5. user name
+# 6. scheduling class
+# 7. job name
+# 8. logical job name
