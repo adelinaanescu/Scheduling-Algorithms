@@ -1,8 +1,5 @@
 # extract data from the Google cluster-usage-traces format schema
 import csv
-
-# how to transform csv.gz files to csv?
-# url_job_events = "https://commondatastorage.googleapis.com/clusterdata-2011-2/job_events/part-00000-of-00500.csv.gz"
 from models.job import Job
 from models.node import Node
 from models.task import Task
@@ -54,7 +51,7 @@ class DataLoader:
                 cpu_capacity = row[4]
                 memory_capacity = row[5]
                 node = Node(id, cpu_capacity, memory_capacity)
-                print(node)
+                # print(node)
                 nodes.append(node)
                 line_count += 1
                 if line_count >= number_of_nodes:
