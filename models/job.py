@@ -3,6 +3,7 @@ class Job:
         self.id = id
         self.timestamp = timestamp
         self.event_type = event_type
+        self.tasks = []
 
 
     def __str__(self):

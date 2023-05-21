@@ -1,25 +1,28 @@
-class FirstComeFirstServed:
+import datetime
+
+class RoundRobin:
     def __init__(self):
         self.makespan = None
 
     def allocate_resources(self, jobs, nodes):
-        # Flatten all tasks from all jobs into a single list and sort them
+        # Flatten all tasks from all jobs into a single list and sort them by arrival_time
         tasks = sorted([task for job in jobs for task in job.tasks], key=lambda x: x.arrival_time)
         unallocated_tasks = tasks.copy()
 
         # While there are tasks that have not been allocated, continue to attempt allocation
+        current_node_index = 0
         while unallocated_tasks:
             for task in unallocated_tasks:
-                for node in nodes:
-                    # deallocate resources for completed tasks
-                    node.deallocate_resources()
-                    # allocate resources to new task
-                    if node.allocate_resources(task):
-                        # If the task is allocated, store the node ID
-                        task.allocated_node = node.node_id
+                for i in range(len(nodes)):
+                    current_node = nodes[current_node_index]
+                    current_node.deallocate_resources()
+                    if current_node.allocate_resources(task):
+                        task.allocated_node = current_node.node_id
                         unallocated_tasks.remove(task)
                         break
-                # If all nodes have been tried, and task is not allocated, wait before next attempt
+                    # Move to next node
+                    current_node_index = (current_node_index + 1) % len(nodes)
+                # If all nodes have been tried and task is not allocated, wait before next attempt
                 if task.allocated_node is None:
                     break
 
