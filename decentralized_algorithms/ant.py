@@ -1,6 +1,4 @@
-from models.algorithm import Algorithm
 
-
-class AntColonyOptimization(Algorithm):
+class AntColonyOptimization():
     def allocate_resources(self, jobs, nodes):
         print("Not yet implemented")

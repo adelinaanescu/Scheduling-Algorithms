@@ -38,10 +38,11 @@ class DataLoader:
                 try:
                     cpu_units = float(row[9])
                     memory = float(row[10])
+                    duration = float(row[13])
                 except ValueError:
                     print(f'Invalid numeric value in row {line_count}: cpu_units={row[9]}, memory={row[10]}')
                     continue
-                task = Task(id, job_id, cpu_units, memory, float(0.1), timestamp)
+                task = Task(id, job_id, cpu_units, memory, duration, timestamp)
                 tasks.append(task)
                 line_count += 1
                 if line_count >= number_of_tasks:

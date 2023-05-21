@@ -1,17 +1,19 @@
+from datetime import timedelta
+
 from centralized_algorithms.fcfs import FirstComeFirstServed
-from centralized_algorithms.rr import RoundRobin
+from centralized_algorithms.sjf import ShortestJobFirst
+
 from data_loader import DataLoader
 import random
 
-from decentralized_algorithms.bee import BeeColonyOptimization
-
-n_nodes = 5
+n_nodes = 10
 n_tasks = 45
 n_jobs = 20
 
 dataLoader = DataLoader()
 jobs = dataLoader.jobs_loader(n_jobs)
 tasks = dataLoader.tasks_loader(n_tasks)
+
 for job in jobs:
  for task in tasks:
      if job.id == task.job_id:
@@ -19,15 +21,19 @@ for job in jobs:
 
 nodes = dataLoader.nodes_loader(n_nodes)
 
-#peer-to-peer network
-# for i in range(5):
-#     #each node has 5 peers
-#     for node in nodes:
-#         n = random.randint(0,19)
-#         node.connect_to_peer(nodes[n])
+# Build network
+for node in nodes:
+    # Create a copy of the nodes list and remove the current node
+    other_nodes = nodes.copy()
+    other_nodes.remove(node)
+    # Randomly select 5 nodes to be neighbors of the current node
+    neighbors = random.sample(other_nodes, 5)
+    for neighbor in neighbors:
+        node.add_neighbor(neighbor)
+
 
 scheduler = FirstComeFirstServed()
-scheduler.allocate_resources(jobs, nodes)
+scheduler.allocate_resources(jobs, nodes[1])
 
 for job in jobs:
     for task in job.tasks:

@@ -1,29 +1,36 @@
+from datetime import datetime, timedelta
+from collections import deque
+
 class FirstComeFirstServed:
     def __init__(self):
         self.makespan = None
+        self.current_time = datetime.min  # Initialize current time at the minimum datetime value
 
-    def allocate_resources(self, jobs, nodes):
-        # Flatten all tasks from all jobs into a single list and sort them
+    def allocate_resources(self, jobs, starting_node):
         tasks = sorted([task for job in jobs for task in job.tasks], key=lambda x: x.arrival_time)
         unallocated_tasks = tasks.copy()
 
-        # While there are tasks that have not been allocated, continue to attempt allocation
-        while unallocated_tasks:
-            for task in unallocated_tasks:
-                for node in nodes:
-                    # deallocate resources for completed tasks
-                    node.deallocate_resources()
-                    # allocate resources to new task
-                    if node.allocate_resources(task):
-                        # If the task is allocated, store the node ID
-                        task.allocated_node = node.node_id
-                        unallocated_tasks.remove(task)
-                        break
-                # If all nodes have been tried, and task is not allocated, wait before next attempt
-                if task.allocated_node is None:
-                    break
+        queue = deque([starting_node])
 
-        # Calculate makespan
+        while unallocated_tasks:
+            if queue:
+                node = queue.popleft()
+                node.deallocate_resources(self.current_time)
+
+                for task in unallocated_tasks:
+                    self.current_time = max(self.current_time, task.arrival_time)
+                    if node.allocate_resources(task, self.current_time):
+                        task.allocated_node = node.node_id
+                        print(
+                            f"Task {task.id} from job {task.job_id} was allocated to node {task.allocated_node}, started at {task.start_time} and ended at {task.finish_time}.")
+                        unallocated_tasks.remove(task)
+                        queue.extend(
+                            node.neighbors)  # Add the neighbors of this node to the queue only if the node could take a task
+                        break
+            else:
+                self.current_time += timedelta(seconds=1)
+                queue = deque([starting_node])  # Reset the queue with the starting node
+
         self.makespan = self.compute_makespan(tasks)
 
     def compute_makespan(self, tasks):

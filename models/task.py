@@ -14,8 +14,7 @@ class Task:
 
     @property
     def is_executed(self):
-        return self.start_time is not None and self.finish_time is not None and \
-               datetime.now() >= self.finish_time
+        return self.start_time is not None and self.finish_time is not None
 
     def __str__(self):
         return "Task {} from job {} with {} CPU units and {} MB of memory".format(self.id, self.job_id, self.cpu_units, self.memory)
@@ -34,3 +33,4 @@ class Task:
 # 11. resource request for RAM
 # 12. resource request for local disk space
 # 13. different-machine constraint
+# 14. duration
