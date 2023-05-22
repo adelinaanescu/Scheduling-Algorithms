@@ -6,6 +6,8 @@ from centralized_algorithms.sjf import ShortestJobFirst
 from data_loader import DataLoader
 import random
 
+from decentralized_algorithms.bee import BeeColonyOptimization
+
 n_nodes = 10
 n_tasks = 45
 n_jobs = 20
@@ -32,7 +34,7 @@ for node in nodes:
         node.add_neighbor(neighbor)
 
 
-scheduler = FirstComeFirstServed()
+scheduler = BeeColonyOptimization(10,10,10)
 scheduler.allocate_resources(jobs, nodes[1])
 
 for job in jobs:
